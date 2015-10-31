@@ -44,6 +44,10 @@
             this.label5 = new System.Windows.Forms.Label();
             this.confNameText = new System.Windows.Forms.TextBox();
             this.shortcutButton = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.bgSelect = new System.Windows.Forms.Button();
+            this.defaultbgButton = new System.Windows.Forms.Button();
+            this.bgImageText = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -183,7 +187,7 @@
             // 
             // shortcutButton
             // 
-            this.shortcutButton.Location = new System.Drawing.Point(15, 168);
+            this.shortcutButton.Location = new System.Drawing.Point(15, 220);
             this.shortcutButton.Name = "shortcutButton";
             this.shortcutButton.Size = new System.Drawing.Size(230, 23);
             this.shortcutButton.TabIndex = 15;
@@ -191,12 +195,55 @@
             this.shortcutButton.UseVisualStyleBackColor = true;
             this.shortcutButton.Click += new System.EventHandler(this.shortcutButton_Click);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(13, 148);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(100, 13);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Background Image:";
+            this.label6.Visible = false;
+            // 
+            // bgSelect
+            // 
+            this.bgSelect.Location = new System.Drawing.Point(173, 162);
+            this.bgSelect.Name = "bgSelect";
+            this.bgSelect.Size = new System.Drawing.Size(75, 23);
+            this.bgSelect.TabIndex = 17;
+            this.bgSelect.Text = "Browse...";
+            this.bgSelect.UseVisualStyleBackColor = true;
+            this.bgSelect.Visible = false;
+            // 
+            // defaultbgButton
+            // 
+            this.defaultbgButton.Location = new System.Drawing.Point(16, 191);
+            this.defaultbgButton.Name = "defaultbgButton";
+            this.defaultbgButton.Size = new System.Drawing.Size(232, 23);
+            this.defaultbgButton.TabIndex = 18;
+            this.defaultbgButton.Text = "Change Background Image to ACC Image";
+            this.defaultbgButton.UseVisualStyleBackColor = true;
+            this.defaultbgButton.Visible = false;
+            // 
+            // bgImageText
+            // 
+            this.bgImageText.Location = new System.Drawing.Point(16, 164);
+            this.bgImageText.Name = "bgImageText";
+            this.bgImageText.ReadOnly = true;
+            this.bgImageText.Size = new System.Drawing.Size(151, 20);
+            this.bgImageText.TabIndex = 19;
+            this.bgImageText.Visible = false;
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(259, 357);
+            this.Controls.Add(this.bgImageText);
+            this.Controls.Add(this.defaultbgButton);
+            this.Controls.Add(this.bgSelect);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.shortcutButton);
             this.Controls.Add(this.confNameText);
             this.Controls.Add(this.label5);
@@ -240,5 +287,9 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox confNameText;
         private System.Windows.Forms.Button shortcutButton;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button bgSelect;
+        private System.Windows.Forms.Button defaultbgButton;
+        private System.Windows.Forms.TextBox bgImageText;
     }
 }

@@ -302,12 +302,13 @@ namespace ACC_Kiosk
         }
         private void Kiosk_Load(object sender, EventArgs e)
         {
-
             Clock.Text = DateTime.Now.ToString("hh:mm:ss tt");
             Properties.Settings.Default.settingsVisible = true;
             Properties.Settings.Default.Save();
             SettingsButton.Visible = true;
-            
+
+
+
             // Maximize Window
             // FormBorderStyle = FormBorderStyle.None;
             // WindowState = FormWindowState.Maximized;
@@ -389,15 +390,21 @@ namespace ACC_Kiosk
                     MessageBox.Show("Error: " + ef, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 pptdir = dir + "POWERPNT.exe";
+                // This needs updating to reflect the ppt dir.
                 // pptdir = @"C:\Program Files (x86)\Microsoft Office\Office14\POWERPNT.exe";
             }
             else if (programtype == "adobe") // get adobe settings
             {
-                var adobe = Registry.LocalMachine.OpenSubKey("Software").OpenSubKey("Microsoft").OpenSubKey("Windows").OpenSubKey("CurrentVersion").OpenSubKey("App Paths").OpenSubKey("AcroRd32.exe");
-                var path = adobe.GetValue("");
-                pptdir = path.ToString();
-                args = "/A \"pagemode = FullScreen\" ";
+                // Broken
+                //var adobe = Registry.LocalMachine.OpenSubKey("Software").OpenSubKey("Microsoft").OpenSubKey("Windows").OpenSubKey("CurrentVersion").OpenSubKey("App Paths").OpenSubKey("AcroRd32.exe");
+                //var path = adobe.GetValue("");
+                //pptdir = path.ToString();
+                //args = "/A \"pagemode = FullScreen\" ";
+                pptdir = file; args = "/A \"pagemode = FullScreen\" ";
             }
+
+
+
             else if (programtype == "prezi") { pptdir = file; }
             else if (programtype == "exe" || 
                 programtype == "rar" ||

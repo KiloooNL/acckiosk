@@ -17,5 +17,8 @@
     <Setting Name="settingsVisible" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="bgImage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ACC_Kiosk.Properties.Resources.Adelaide_Convention_Centre</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -209,6 +209,16 @@ namespace ACC_Kiosk
                 // Create a string array
                 string prestime = "\n" + timeTime.Text.ToString();
                 string[] lines = {
+                /*
+                Output is as follows:
+                    Presentation Time: prestime,
+                    Presentation Date: dateTime,
+                    Presenter Name:    PresenterNameText,
+                    Presentation Room: roomName,
+                    PPT File:          pptDirText,
+                    File Path:         completeFilePath
+                */
+
                     /*"Presentation Time: " + */
                     prestime,
 
