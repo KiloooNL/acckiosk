@@ -1,0 +1,12 @@
+D:\Users\benni\Documents\Visual Studio 2015\Projects\ACC Kiosk\ACC Kiosk\bin\x86\Debug\ACC Kiosk.exe.config
+D:\Users\benni\Documents\Visual Studio 2015\Projects\ACC Kiosk\ACC Kiosk\obj\x86\Debug\Interop.IWshRuntimeLibrary.dll
+D:\Users\benni\Documents\Visual Studio 2015\Projects\ACC Kiosk\ACC Kiosk\obj\x86\Debug\ACC Kiosk.csproj.ResolveComReference.cache
+D:\Users\benni\Documents\Visual Studio 2015\Projects\ACC Kiosk\ACC Kiosk\bin\x86\Debug\ACC Kiosk.exe
+D:\Users\benni\Documents\Visual Studio 2015\Projects\ACC Kiosk\ACC Kiosk\bin\x86\Debug\ACC Kiosk.pdb
+D:\Users\benni\Documents\Visual Studio 2015\Projects\ACC Kiosk\ACC Kiosk\obj\x86\Debug\ACC_Kiosk.Kiosk.resources
+D:\Users\benni\Documents\Visual Studio 2015\Projects\ACC Kiosk\ACC Kiosk\obj\x86\Debug\ACC_Kiosk.PPTBrowser.resources
+D:\Users\benni\Documents\Visual Studio 2015\Projects\ACC Kiosk\ACC Kiosk\obj\x86\Debug\ACC_Kiosk.Settings.resources
+D:\Users\benni\Documents\Visual Studio 2015\Projects\ACC Kiosk\ACC Kiosk\obj\x86\Debug\ACC_Kiosk.Properties.Resources.resources
+D:\Users\benni\Documents\Visual Studio 2015\Projects\ACC Kiosk\ACC Kiosk\obj\x86\Debug\ACC Kiosk.csproj.GenerateResource.Cache
+D:\Users\benni\Documents\Visual Studio 2015\Projects\ACC Kiosk\ACC Kiosk\obj\x86\Debug\ACC Kiosk.exe
+D:\Users\benni\Documents\Visual Studio 2015\Projects\ACC Kiosk\ACC Kiosk\obj\x86\Debug\ACC Kiosk.pdb

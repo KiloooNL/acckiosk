@@ -1,0 +1,1 @@
+ACCKiosk;1.1;myapp-pro.txt
