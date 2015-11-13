@@ -100,7 +100,7 @@
             this.OKButton.Location = new System.Drawing.Point(204, 234);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
-            this.OKButton.TabIndex = 5;
+            this.OKButton.TabIndex = 10;
             this.OKButton.Text = "OK";
             this.OKButton.UseVisualStyleBackColor = true;
             this.OKButton.Click += new System.EventHandler(this.OKButton_Click);
@@ -110,7 +110,7 @@
             this.CancelButton.Location = new System.Drawing.Point(286, 234);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(75, 23);
-            this.CancelButton.TabIndex = 6;
+            this.CancelButton.TabIndex = 11;
             this.CancelButton.Text = "Cancel";
             this.CancelButton.UseVisualStyleBackColor = true;
             this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
@@ -121,7 +121,7 @@
             this.label3.Location = new System.Drawing.Point(13, 130);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(99, 13);
-            this.label3.TabIndex = 7;
+            this.label3.TabIndex = 5;
             this.label3.Text = "Day of presentation";
             // 
             // dateTime
@@ -129,7 +129,7 @@
             this.dateTime.Location = new System.Drawing.Point(16, 147);
             this.dateTime.Name = "dateTime";
             this.dateTime.Size = new System.Drawing.Size(197, 20);
-            this.dateTime.TabIndex = 11;
+            this.dateTime.TabIndex = 6;
             this.dateTime.ValueChanged += new System.EventHandler(this.dateTime_ValueChanged);
             // 
             // label5
@@ -138,7 +138,7 @@
             this.label5.Location = new System.Drawing.Point(235, 130);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(95, 13);
-            this.label5.TabIndex = 12;
+            this.label5.TabIndex = 7;
             this.label5.Text = "Presentation Time:";
             // 
             // timeTime
@@ -148,7 +148,7 @@
             this.timeTime.Name = "timeTime";
             this.timeTime.ShowUpDown = true;
             this.timeTime.Size = new System.Drawing.Size(92, 20);
-            this.timeTime.TabIndex = 13;
+            this.timeTime.TabIndex = 8;
             this.timeTime.Value = new System.DateTime(2015, 7, 8, 12, 0, 0, 0);
             // 
             // timer1
@@ -163,7 +163,7 @@
             this.label4.Location = new System.Drawing.Point(37, 191);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(280, 25);
-            this.label4.TabIndex = 14;
+            this.label4.TabIndex = 9;
             this.label4.Text = "Please wait - copying files...";
             this.label4.Visible = false;
             this.label4.Click += new System.EventHandler(this.label4_Click);

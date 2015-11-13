@@ -67,7 +67,7 @@
             this.label2.Location = new System.Drawing.Point(12, 275);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(60, 13);
-            this.label2.TabIndex = 2;
+            this.label2.TabIndex = 13;
             this.label2.Text = "This PC IP:";
             // 
             // IPLabel
@@ -78,7 +78,7 @@
             this.IPLabel.Location = new System.Drawing.Point(99, 275);
             this.IPLabel.Name = "IPLabel";
             this.IPLabel.Size = new System.Drawing.Size(60, 13);
-            this.IPLabel.TabIndex = 3;
+            this.IPLabel.TabIndex = 14;
             this.IPLabel.Text = "Unknown";
             // 
             // RoomName
@@ -87,7 +87,7 @@
             this.RoomName.MaxLength = 80;
             this.RoomName.Name = "RoomName";
             this.RoomName.Size = new System.Drawing.Size(232, 20);
-            this.RoomName.TabIndex = 4;
+            this.RoomName.TabIndex = 1;
             this.RoomName.TextChanged += new System.EventHandler(this.RoomName_TextChanged);
             // 
             // OKButton
@@ -95,7 +95,7 @@
             this.OKButton.Location = new System.Drawing.Point(92, 322);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
-            this.OKButton.TabIndex = 5;
+            this.OKButton.TabIndex = 17;
             this.OKButton.Text = "OK";
             this.OKButton.UseVisualStyleBackColor = true;
             this.OKButton.Click += new System.EventHandler(this.OKButton_Click);
@@ -106,7 +106,7 @@
             this.cancelButton.Location = new System.Drawing.Point(173, 322);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 6;
+            this.cancelButton.TabIndex = 18;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
@@ -117,7 +117,7 @@
             this.label3.Location = new System.Drawing.Point(12, 302);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(78, 13);
-            this.label3.TabIndex = 7;
+            this.label3.TabIndex = 15;
             this.label3.Text = "This PC Name:";
             // 
             // PCNameLabel
@@ -128,7 +128,7 @@
             this.PCNameLabel.Location = new System.Drawing.Point(99, 302);
             this.PCNameLabel.Name = "PCNameLabel";
             this.PCNameLabel.Size = new System.Drawing.Size(60, 13);
-            this.PCNameLabel.TabIndex = 8;
+            this.PCNameLabel.TabIndex = 16;
             this.PCNameLabel.Text = "Unknown";
             this.PCNameLabel.Click += new System.EventHandler(this.PCNameLabel_Click);
             // 
@@ -138,7 +138,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(151, 20);
-            this.textBox1.TabIndex = 9;
+            this.textBox1.TabIndex = 5;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label4
@@ -147,7 +147,7 @@
             this.label4.Location = new System.Drawing.Point(13, 98);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(89, 13);
-            this.label4.TabIndex = 10;
+            this.label4.TabIndex = 4;
             this.label4.Text = "Default Directory:";
             // 
             // folderSelect
@@ -155,7 +155,7 @@
             this.folderSelect.Location = new System.Drawing.Point(173, 112);
             this.folderSelect.Name = "folderSelect";
             this.folderSelect.Size = new System.Drawing.Size(72, 23);
-            this.folderSelect.TabIndex = 11;
+            this.folderSelect.TabIndex = 6;
             this.folderSelect.Text = "Browse...";
             this.folderSelect.UseVisualStyleBackColor = true;
             this.folderSelect.Click += new System.EventHandler(this.folderSelect_Click);
@@ -176,7 +176,7 @@
             this.label5.Location = new System.Drawing.Point(13, 58);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(96, 13);
-            this.label5.TabIndex = 13;
+            this.label5.TabIndex = 2;
             this.label5.Text = "Conference Name:";
             // 
             // confNameText
@@ -184,7 +184,7 @@
             this.confNameText.Location = new System.Drawing.Point(16, 74);
             this.confNameText.Name = "confNameText";
             this.confNameText.Size = new System.Drawing.Size(229, 20);
-            this.confNameText.TabIndex = 14;
+            this.confNameText.TabIndex = 3;
             this.confNameText.TextChanged += new System.EventHandler(this.confNameText_TextChanged);
             // 
             // shortcutButton
@@ -192,7 +192,7 @@
             this.shortcutButton.Location = new System.Drawing.Point(15, 220);
             this.shortcutButton.Name = "shortcutButton";
             this.shortcutButton.Size = new System.Drawing.Size(230, 23);
-            this.shortcutButton.TabIndex = 15;
+            this.shortcutButton.TabIndex = 11;
             this.shortcutButton.Text = "Create Shortcut on Desktop";
             this.shortcutButton.UseVisualStyleBackColor = true;
             this.shortcutButton.Click += new System.EventHandler(this.shortcutButton_Click);
@@ -203,7 +203,7 @@
             this.label6.Location = new System.Drawing.Point(13, 148);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(238, 13);
-            this.label6.TabIndex = 16;
+            this.label6.TabIndex = 7;
             this.label6.Text = "Background Image (1920 x 1080 recommended):";
             this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
@@ -212,7 +212,7 @@
             this.bgSelect.Location = new System.Drawing.Point(173, 162);
             this.bgSelect.Name = "bgSelect";
             this.bgSelect.Size = new System.Drawing.Size(75, 23);
-            this.bgSelect.TabIndex = 17;
+            this.bgSelect.TabIndex = 9;
             this.bgSelect.Text = "Browse...";
             this.bgSelect.UseVisualStyleBackColor = true;
             this.bgSelect.Click += new System.EventHandler(this.bgSelect_Click);
@@ -222,7 +222,7 @@
             this.defaultbgButton.Location = new System.Drawing.Point(16, 191);
             this.defaultbgButton.Name = "defaultbgButton";
             this.defaultbgButton.Size = new System.Drawing.Size(232, 23);
-            this.defaultbgButton.TabIndex = 18;
+            this.defaultbgButton.TabIndex = 10;
             this.defaultbgButton.Text = "Change Background Image to ACC Image";
             this.defaultbgButton.UseVisualStyleBackColor = true;
             this.defaultbgButton.Visible = false;
@@ -234,7 +234,7 @@
             this.bgImageText.Name = "bgImageText";
             this.bgImageText.ReadOnly = true;
             this.bgImageText.Size = new System.Drawing.Size(151, 20);
-            this.bgImageText.TabIndex = 19;
+            this.bgImageText.TabIndex = 8;
             this.bgImageText.TextChanged += new System.EventHandler(this.bgImageText_TextChanged);
             // 
             // openFileDialog1

@@ -82,11 +82,19 @@ namespace ACC_Kiosk
 
         private void OKButton_Click(object sender, EventArgs e)
         {
-            if(RoomName.Text == "")
+
+            if (RoomName.Text == "")
             {
                 OKButton.Enabled = false; shortcutButton.Enabled = false;
                 MessageBox.Show("The room/hall name cannot be blank.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-            } else {
+            }
+            else if (confNameText.Text == "")
+            {
+                OKButton.Enabled = false; shortcutButton.Enabled = false;
+                MessageBox.Show("The conference name cannot be blank.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else
+            {
                 Properties.Settings.Default.roomName = this.RoomName.Text;
                 Properties.Settings.Default.confName = this.confNameText.Text;
                 Properties.Settings.Default.settingsVisible = false;
@@ -121,13 +129,23 @@ namespace ACC_Kiosk
         {
             // Change our default folder
             FolderBrowserDialog folderPicker = new FolderBrowserDialog();
-            if (folderPicker.ShowDialog() == DialogResult.OK) {
-                defaultDirectory = folderPicker.SelectedPath.ToString() + "\\";
-                Properties.Settings.Default.defaultDirectory = folderPicker.SelectedPath.ToString() + "\\";
-                textBox1.Text = folderPicker.SelectedPath.ToString() + "\\";
-                Properties.Settings.Default.Save();
+
+            if(folderPicker.ShowDialog() == DialogResult.Cancel)
+            {
+                // do nothing
+            } else
+            {
+                try
+                {
+                    defaultDirectory = folderPicker.SelectedPath.ToString() + "\\";
+                    Properties.Settings.Default.defaultDirectory = folderPicker.SelectedPath.ToString() + "\\";
+                    textBox1.Text = folderPicker.SelectedPath.ToString() + "\\";
+                    Properties.Settings.Default.Save();
+                    OKButton.Enabled = true;
+                } catch (Exception error)  {
+                    MessageBox.Show("Error, invalid folder!\nTry another folder\n" + error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            else { MessageBox.Show("Error, invalid folder!\nTry another folder", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
         private void clearButton_Click(object sender, EventArgs e)
@@ -149,7 +167,7 @@ namespace ACC_Kiosk
                     Properties.Settings.Default.updateList = true;
                     Properties.Settings.Default.roomName = "";
                     Properties.Settings.Default.confName = "";
-                    Properties.Settings.Default.defaultDirectory = @"C:\Users\Public\Kiosk\pres";
+                    Properties.Settings.Default.defaultDirectory = @"C:\Users\Public\pres";
                     Properties.Settings.Default.Save();
                     Settings.ActiveForm.Close();
                 } catch (Exception error)
@@ -169,6 +187,9 @@ namespace ACC_Kiosk
             {
                 MessageBox.Show("The conference name '" + RoomName.Text + "' contains characters that are not allowed. Characters that are not allowed include ' \\ / : * ? \" < > | ", 
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            } else
+            {
+                OKButton.Enabled = true; shortcutButton.Enabled = true;
             }
         }
 

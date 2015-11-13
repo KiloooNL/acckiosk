@@ -46,7 +46,7 @@
             this.AddPres.Location = new System.Drawing.Point(527, 399);
             this.AddPres.Name = "AddPres";
             this.AddPres.Size = new System.Drawing.Size(139, 38);
-            this.AddPres.TabIndex = 0;
+            this.AddPres.TabIndex = 4;
             this.AddPres.Text = "Add Presentation";
             this.AddPres.UseVisualStyleBackColor = true;
             this.AddPres.Click += new System.EventHandler(this.AddPres_Click);
@@ -65,7 +65,7 @@
             this.PresList.Name = "PresList";
             this.PresList.Size = new System.Drawing.Size(474, 329);
             this.PresList.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.PresList.TabIndex = 1;
+            this.PresList.TabIndex = 3;
             this.PresList.UseCompatibleStateImageBehavior = false;
             this.PresList.View = System.Windows.Forms.View.List;
             this.PresList.SelectedIndexChanged += new System.EventHandler(this.PresList_SelectedIndexChanged);
@@ -76,7 +76,7 @@
             this.StartPresButton.Location = new System.Drawing.Point(789, 400);
             this.StartPresButton.Name = "StartPresButton";
             this.StartPresButton.Size = new System.Drawing.Size(128, 37);
-            this.StartPresButton.TabIndex = 2;
+            this.StartPresButton.TabIndex = 6;
             this.StartPresButton.Text = "Start Presentation";
             this.StartPresButton.UseVisualStyleBackColor = true;
             this.StartPresButton.Click += new System.EventHandler(this.StartPresButton_Click);
@@ -106,7 +106,7 @@
             this.label2.Location = new System.Drawing.Point(524, 14);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(312, 13);
-            this.label2.TabIndex = 7;
+            this.label2.TabIndex = 0;
             this.label2.Text = "Check conference and hall/room name in settings --->";
             this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
@@ -120,7 +120,7 @@
             this.Clock.Location = new System.Drawing.Point(760, 32);
             this.Clock.Name = "Clock";
             this.Clock.Size = new System.Drawing.Size(76, 29);
-            this.Clock.TabIndex = 6;
+            this.Clock.TabIndex = 2;
             this.Clock.Text = "12:00";
             // 
             // SettingsButton
@@ -129,7 +129,7 @@
             this.SettingsButton.Location = new System.Drawing.Point(842, 9);
             this.SettingsButton.Name = "SettingsButton";
             this.SettingsButton.Size = new System.Drawing.Size(75, 23);
-            this.SettingsButton.TabIndex = 4;
+            this.SettingsButton.TabIndex = 1;
             this.SettingsButton.Text = "Settings";
             this.SettingsButton.UseVisualStyleBackColor = true;
             this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
