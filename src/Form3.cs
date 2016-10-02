@@ -114,10 +114,6 @@ namespace ACC_Kiosk
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else if (RoomName.Text == "" || textBox1.Text == "")
             { OKButton.Enabled = false; shortcutButton.Enabled = false; }
-            else
-            {
-                OKButton.Enabled = true; shortcutButton.Enabled = true;
-            }
         }
 
         private void PCNameLabel_Click(object sender, EventArgs e)
@@ -187,9 +183,6 @@ namespace ACC_Kiosk
             {
                 MessageBox.Show("The conference name '" + RoomName.Text + "' contains characters that are not allowed. Characters that are not allowed include ' \\ / : * ? \" < > | ", 
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            } else
-            {
-                OKButton.Enabled = true; shortcutButton.Enabled = true;
             }
         }
 

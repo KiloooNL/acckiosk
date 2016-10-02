@@ -122,6 +122,7 @@
             this.Clock.Size = new System.Drawing.Size(76, 29);
             this.Clock.TabIndex = 2;
             this.Clock.Text = "12:00";
+            this.Clock.Click += new System.EventHandler(this.Clock_Click);
             // 
             // SettingsButton
             // 

@@ -119,9 +119,8 @@ namespace ACC_Kiosk
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
-
             // See if background image has been changed.
-            if(!Properties.Settings.Default.bgImage.Contains("Properties.Resources.Adelaide_Convention_Centre"))
+            if (!Properties.Settings.Default.bgImage.Contains("Properties.Resources.Adelaide_Convention_Centre"))
             {
                 try
                 {
@@ -174,9 +173,10 @@ namespace ACC_Kiosk
                         (item\\[^\t]+\.ddj)
                             Here's the meat. This matches: "item\<one or more of anything but a tab>.ddj"*/
 
+                        
                         while ((line = reader.ReadLine()) != null)
                         {
-
+                            editPres.Enabled = true; StartPresButton.Enabled = true;
                             PPT Pres = new PPT();
                             Pres.Time = reader.ReadLine();
                             Pres.Day = reader.ReadLine();
@@ -219,7 +219,7 @@ namespace ACC_Kiosk
                                     PresList.Items.Add(listViewItem);
                                 }
                             } else { }
-                        }
+                        } 
                     }
                 }
             }
@@ -292,6 +292,9 @@ namespace ACC_Kiosk
 
         private void Kiosk_Load(object sender, EventArgs e)
         {
+            editPres.Enabled = false; StartPresButton.Enabled = false; // Disable until we retrieve list items
+
+
             Clock.Text = DateTime.Now.ToString("hh:mm:ss tt");
             Properties.Settings.Default.settingsVisible = true;
             Properties.Settings.Default.Save();
@@ -460,6 +463,11 @@ namespace ACC_Kiosk
         }
 
         private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void Clock_Click(object sender, EventArgs e)
         {
 
         }
