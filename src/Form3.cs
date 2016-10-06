@@ -12,10 +12,14 @@ namespace ACC_Kiosk
         public object Directory { get; private set; }
         public string defaultDirectory;
 
-
+        // print(str)
+        public void print(string printString)
+        {
+            Console.WriteLine(printString);
+        }
 
         // Get Local IP
-        public static string GetClientIpV4()
+        string GetClientIP()
         {
             IPHostEntry host;
             string localIp = "Unknown";
@@ -31,10 +35,87 @@ namespace ACC_Kiosk
             return localIp;
         }
 
-
+        // Initialize
         public Settings()
         {
             InitializeComponent();
+        }
+
+        // Load settings from settings.cfg
+        void SettingsLoad()
+        {
+            // Load Settings
+            RoomName.Text = Properties.Settings.Default.roomName;
+            confNameText.Text = Properties.Settings.Default.confName;
+            PCNameLabel.Text = SystemInformation.ComputerName.ToString();
+            textBox1.Text = Properties.Settings.Default.defaultDirectory;
+            bgImageText.Text = Properties.Settings.Default.bgImage;
+
+
+            if (bgImageText.Text.Contains("Adelaide_Convention_Centre"))
+            {
+                defaultbgButton.Visible = false;
+                defaultbgButton.Enabled = false;
+            }
+            else { defaultbgButton.Visible = true; defaultbgButton.Enabled = true; }
+
+
+            if (RoomName.Text == "" || textBox1.Text == "")
+            { OKButton.Enabled = false; shortcutButton.Enabled = false; }
+        }
+
+        // Save settings to settings.cfg
+        void SaveSettings()
+        {
+
+            if (RoomName.Text == "")
+            {
+                OKButton.Enabled = false; shortcutButton.Enabled = false;
+                MessageBox.Show("The room/hall name cannot be blank.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else if (confNameText.Text == "")
+            {
+                OKButton.Enabled = false; shortcutButton.Enabled = false;
+                MessageBox.Show("The conference name cannot be blank.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            } else
+            {
+                Properties.Settings.Default.roomName = this.RoomName.Text;
+                Properties.Settings.Default.confName = this.confNameText.Text;
+                Properties.Settings.Default.settingsVisible = false;
+
+                try
+                {
+                    Properties.Settings.Default.Save();
+                    print("Settings updated.");
+                }
+                catch (Exception e)
+                {
+                    print("Error: Settings could not be saved:\n" + e);
+                }
+            }
+
+        }
+        
+        // Clear settings and load defaults
+        void ClearSettings()
+        {
+            string file = "settings.cfg";
+            if (System.IO.File.Exists(file))
+            {
+                System.IO.File.WriteAllText(file, String.Empty);
+            }
+
+            print("Settings cleared.");
+            MessageBox.Show("Settings & all presentations cleared.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            clearButton.Enabled = false;
+
+            // Update our settings to defaults
+            Properties.Settings.Default.updateList = true;
+            Properties.Settings.Default.roomName = "";
+            Properties.Settings.Default.confName = "";
+            Properties.Settings.Default.defaultDirectory = @"C:\Users\Public\pres";
+            Properties.Settings.Default.bgImage = "ACC_Kiosk.Properties.Resources.Adelaide_Convention_Centre";
+            Properties.Settings.Default.Save();
         }
 
         // Make 'Enter' the return key for the form.
@@ -49,31 +130,14 @@ namespace ACC_Kiosk
 
         private void Settings_Load(object sender, EventArgs e)
         {
-            // Load Settings
-            RoomName.Text = Properties.Settings.Default.roomName;
-            confNameText.Text = Properties.Settings.Default.confName;
-            PCNameLabel.Text = SystemInformation.ComputerName.ToString();
-            textBox1.Text = Properties.Settings.Default.defaultDirectory;
-            bgImageText.Text = Properties.Settings.Default.bgImage;
-
-            if(bgImageText.Text.Contains("Adelaide_Convention_Centre"))
-            {
-                defaultbgButton.Visible = false;
-                defaultbgButton.Enabled = false;
-            } else { defaultbgButton.Visible = true;  defaultbgButton.Enabled = true; }
-
-            if (RoomName.Text == "" || textBox1.Text =="")
-            { OKButton.Enabled = false; shortcutButton.Enabled = false; }
+            // Load settings from settings.cfg
+            SettingsLoad();
 
             // get ip
-            try { IPLabel.Text = GetClientIpV4(); }
+            try { IPLabel.Text = GetClientIP(); }
             catch (Exception) { IPLabel.Text = "Unknown"; }
         }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
+        
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
@@ -82,25 +146,8 @@ namespace ACC_Kiosk
 
         private void OKButton_Click(object sender, EventArgs e)
         {
-
-            if (RoomName.Text == "")
-            {
-                OKButton.Enabled = false; shortcutButton.Enabled = false;
-                MessageBox.Show("The room/hall name cannot be blank.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-            }
-            else if (confNameText.Text == "")
-            {
-                OKButton.Enabled = false; shortcutButton.Enabled = false;
-                MessageBox.Show("The conference name cannot be blank.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-            }
-            else
-            {
-                Properties.Settings.Default.roomName = this.RoomName.Text;
-                Properties.Settings.Default.confName = this.confNameText.Text;
-                Properties.Settings.Default.settingsVisible = false;
-                Properties.Settings.Default.Save();
-                Settings.ActiveForm.Close();
-            }
+            SaveSettings();
+            Settings.ActiveForm.Close();
         }
 
         private void RoomName_TextChanged(object sender, EventArgs e)
@@ -144,6 +191,8 @@ namespace ACC_Kiosk
             }
         }
 
+
+
         private void clearButton_Click(object sender, EventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("Are you sure?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -151,20 +200,7 @@ namespace ACC_Kiosk
             if(dialogResult == DialogResult.Yes)
             {
                 try {
-                    string file = "settings.cfg";
-                    if(System.IO.File.Exists(file))
-                    {
-                        System.IO.File.WriteAllText(file, String.Empty);
-                    }
-                    MessageBox.Show("Settings & all presentations cleared.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    clearButton.Enabled = false;
-
-                    // Update our settings
-                    Properties.Settings.Default.updateList = true;
-                    Properties.Settings.Default.roomName = "";
-                    Properties.Settings.Default.confName = "";
-                    Properties.Settings.Default.defaultDirectory = @"C:\Users\Public\pres";
-                    Properties.Settings.Default.Save();
+                    ClearSettings();
                     Settings.ActiveForm.Close();
                 } catch (Exception error)
                 {

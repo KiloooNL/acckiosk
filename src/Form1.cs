@@ -37,6 +37,7 @@ namespace ACC_Kiosk
             timer1.Interval = 500; // in miliseconds
             timer1.Start();
         }
+
         // Initialize ListView
         private void CreateSettingsCFG()
         {
@@ -117,6 +118,7 @@ namespace ACC_Kiosk
             else if (e.ColumnIndex == 3 || e.ColumnIndex == 5) { e.NewWidth = 100; e.Cancel = true; }
             else if (e.ColumnIndex == 4) { e.NewWidth = 0; e.Cancel = true; }
         }
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             // See if background image has been changed.
@@ -268,6 +270,7 @@ namespace ACC_Kiosk
             openPPTFile = PresList.SelectedItems[0].SubItems[4].Text;
             StartPresButton.PerformClick();
         }
+
         private void PresList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (PresList.SelectedItems.Count == 0)
