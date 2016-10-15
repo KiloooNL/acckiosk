@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using System.Xml;
 
 namespace ACC_Kiosk
 {
@@ -16,6 +17,87 @@ namespace ACC_Kiosk
         private System.Windows.Forms.Timer timer1;
         public string programtype;
         public string openPPTFile;
+        public string pptdir;
+        public string file;
+        public string args;
+
+        // Update URL -> xml file
+        public string updateURL = "http://www.bmcstudios.net/projects/acckiosk/update.xml";
+
+        void checkForUpdates()
+        {
+
+            string downloadUrl = "";
+            Version newVersion = null;
+            string aboutUpdate = "";
+            string xmlUrl = updateURL;
+            XmlTextReader reader = null;
+            try
+            {
+                reader = new XmlTextReader(xmlUrl);
+                reader.MoveToContent();
+                string elementName = "";
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "appinfo"))
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.NodeType == XmlNodeType.Element)
+                        {
+                            elementName = reader.Name;
+                        }
+                        else
+                        {
+                            if ((reader.NodeType == XmlNodeType.Text) && (reader.HasValue))
+                                switch (elementName)
+                                {
+                                    case "version":
+                                        newVersion = new Version(reader.Value);
+                                        break;
+                                    case "url":
+                                        downloadUrl = reader.Value;
+                                        break;
+                                    case "about":
+                                        aboutUpdate = reader.Value;
+                                        break;
+                                }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Environment.Exit(1);
+            }
+            finally
+            {
+                if (reader != null)
+                    reader.Close();
+            }
+            Version applicationVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            if (applicationVersion.CompareTo(newVersion) < 0)
+            {
+                string str = String.Format(
+                    "There is a new version available.\n" +
+                    "Your version: {0}.\n" +
+                    "Newest version: {1}.\n" +
+                    "Changes in new version: \n{2}. ", applicationVersion, newVersion, aboutUpdate);
+                if (DialogResult.No != MessageBox.Show(str + "\nWould you like to download this update?", "Check for updates", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                {
+                    try
+                    {
+                        Process.Start(downloadUrl);
+                    }
+                    catch { }
+                    return;
+                }
+            }
+            else
+            {
+                // make a log that adds this.
+                Console.WriteLine("Application version checked and is up-to-date");
+            }
+        }
 
         public class PPT
         {
@@ -110,6 +192,110 @@ namespace ACC_Kiosk
             PresList.ColumnWidthChanging += PresList_ColumnWidthChanging;
         }
 
+        // Try to load PPT File from openPPT();
+        string launchPowerPointFile(string pptdir)
+        {
+            string dir = "";
+            try
+            {
+                RegistryKey key = Registry.LocalMachine;
+                RegistryKey pptKey = key.OpenSubKey(@"SOFTWARE\Microsoft\Office");
+                if (pptKey != null)
+                {
+                    foreach (string valuename in pptKey.GetSubKeyNames())
+                    {
+                        int version = 9;
+                        double currentVersion = 0;
+                        if (Double.TryParse(valuename, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out currentVersion) && currentVersion >= version)
+                        {
+                            RegistryKey rootdir = pptKey.OpenSubKey(currentVersion + @".0\PowerPoint\InstallRoot");
+                            if (rootdir != null)
+                            {
+                                if (Double.TryParse(valuename, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out currentVersion) && currentVersion >= version)
+                                    dir = rootdir.GetValue(rootdir.GetValueNames()[0]).ToString();
+                                //break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ef)
+            {
+                MessageBox.Show("Error: " + ef, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            pptdir = dir + "POWERPNT.exe";
+            return pptdir;
+            // This needs updating to reflect the ppt dir.
+            // pptdir = @"C:\Program Files (x86)\Microsoft Office\Office14\POWERPNT.exe";
+        }
+        // Try to load Adobe file from openPPT();
+        string launchAdobeFile()
+        {
+            // Broken
+            //var adobe = Registry.LocalMachine.OpenSubKey("Software").OpenSubKey("Microsoft").OpenSubKey("Windows").OpenSubKey("CurrentVersion").OpenSubKey("App Paths").OpenSubKey("AcroRd32.exe");
+            //var path = adobe.GetValue("");
+            //pptdir = path.ToString();
+            //args = "/A \"pagemode = FullScreen\" ";
+            return args = "/A \"pagemode = FullScreen\" ";
+        }
+
+        // Open PowerPoint function
+        void openPPT(string file, string args)
+        {
+            pptdir = @"";
+
+            switch(programtype)
+            {
+                // PPT / Adobe / Prezi
+                case "ppt":
+                    launchPowerPointFile(pptdir);
+                    break;
+                case "adobe":
+                    pptdir = file;
+                    launchAdobeFile();
+                    break;
+                case "prezi":
+                    pptdir = file;
+                    break;
+                
+                // other types of files
+                case "exe": case "zip": case "text": case "html": case "word":
+                    pptdir = file; args = "";
+                    break;
+            }
+            
+
+            // Prepare the process to run,
+            // Then enter in command line args,
+            // Then enter the executable to run (Complete path)
+            ProcessStartInfo start = new ProcessStartInfo();
+            start.Arguments = args + " \"" + file + "\"";
+            start.FileName = pptdir;
+
+            int exitCode;
+
+            // Run the external process & wait for it to finish
+            try
+            {
+                using (Process proc = Process.Start(start))
+                {
+                    // Retrieve the app's exit code
+                    proc.WaitForExit();
+                    exitCode = proc.ExitCode;
+                }
+            }
+            catch (Exception e)
+            {
+                /* Sometimes this error code will appear 
+                 when an error has not actually occurred at all.
+                
+                 For example:
+                 Exception thrown: 'System.NullReferenceException' in ACC Kiosk.exe 
+                 */
+                MessageBox.Show("Error: " + e, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         // Prevent Column Resizing
         private void PresList_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
         {
@@ -175,8 +361,8 @@ namespace ACC_Kiosk
                         (item\\[^\t]+\.ddj)
                             Here's the meat. This matches: "item\<one or more of anything but a tab>.ddj"*/
 
-                        
-                        while ((line = reader.ReadLine()) != null)
+
+                while ((line = reader.ReadLine()) != null)
                         {
                             editPres.Enabled = true; StartPresButton.Enabled = true;
                             PPT Pres = new PPT();
@@ -295,6 +481,7 @@ namespace ACC_Kiosk
 
         private void Kiosk_Load(object sender, EventArgs e)
         {
+            checkForUpdates();
             editPres.Enabled = false; StartPresButton.Enabled = false; // Disable until we retrieve list items
 
 
@@ -358,88 +545,6 @@ namespace ACC_Kiosk
             } 
         }
 
-        void openPPT(string file, string args)
-        {
-            string pptdir = @"";
-
-            if (programtype == "ppt")
-            {
-                string dir = "";
-                try
-                {
-                    RegistryKey key = Registry.LocalMachine;
-                    RegistryKey pptKey = key.OpenSubKey(@"SOFTWARE\Microsoft\Office");
-                    if (pptKey != null)
-                    {
-                        foreach (string valuename in pptKey.GetSubKeyNames())
-                        {
-                            int version = 9;
-                            double currentVersion = 0;
-                            if (Double.TryParse(valuename, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out currentVersion) && currentVersion >= version)
-                            {
-                                RegistryKey rootdir = pptKey.OpenSubKey(currentVersion + @".0\PowerPoint\InstallRoot");
-                                if (rootdir != null)
-                                {
-                                    if (Double.TryParse(valuename, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out currentVersion) && currentVersion >= version)
-                                        dir = rootdir.GetValue(rootdir.GetValueNames()[0]).ToString();
-                                    //break;
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (Exception ef)
-                {
-                    MessageBox.Show("Error: " + ef, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                pptdir = dir + "POWERPNT.exe";
-                // This needs updating to reflect the ppt dir.
-                // pptdir = @"C:\Program Files (x86)\Microsoft Office\Office14\POWERPNT.exe";
-            }
-            else if (programtype == "adobe") // get adobe settings
-            {
-                // Broken
-                //var adobe = Registry.LocalMachine.OpenSubKey("Software").OpenSubKey("Microsoft").OpenSubKey("Windows").OpenSubKey("CurrentVersion").OpenSubKey("App Paths").OpenSubKey("AcroRd32.exe");
-                //var path = adobe.GetValue("");
-                //pptdir = path.ToString();
-                //args = "/A \"pagemode = FullScreen\" ";
-                pptdir = file; args = "/A \"pagemode = FullScreen\" ";
-            }
-
-
-
-            else if (programtype == "prezi") { pptdir = file; }
-            else if (programtype == "exe" || 
-                programtype == "rar" ||
-                programtype == "zip" ||
-                programtype == "text"|| 
-                programtype == "html"||
-                programtype == "word") { pptdir = file; args = ""; }
-            else { pptdir = file; args = ""; }
-
-            // Prepare the process to run
-            ProcessStartInfo start = new ProcessStartInfo();
-            // Enter in the command line arguments, everything you would enter after the executable name itself
-            start.Arguments = args + " \"" + file + "\"";
-            // Enter the executable to run, including the complete path
-            start.FileName = pptdir;
-
-            int exitCode;
-
-            // Run the external process & wait for it to finish
-            try {
-                using (Process proc = Process.Start(start))
-                {
-                    proc.WaitForExit();
-
-                    // Retrieve the app's exit code
-                    exitCode = proc.ExitCode;
-                }
-            } catch(Exception e)
-            {
-                MessageBox.Show("Error: " + e, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
 
         private void editPres_Click(object sender, EventArgs e)
         {
@@ -460,25 +565,26 @@ namespace ACC_Kiosk
             }
         }
 
-        private void label2_Click(object sender, EventArgs e)
-        {
 
-        }
 
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void Clock_Click(object sender, EventArgs e)
-        {
-
-        }
 
         /***********************************************************************
          * --- Code below this line has no function
          *     and merely exists due to the fact visual studio creates
          *     the function for the designer.
         ***********************************************************************/
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void Clock_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
