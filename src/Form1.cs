@@ -474,5 +474,11 @@ namespace ACC_Kiosk
         {
 
         }
+
+        /***********************************************************************
+         * --- Code below this line has no function
+         *     and merely exists due to the fact visual studio creates
+         *     the function for the designer.
+        ***********************************************************************/
     }
 }

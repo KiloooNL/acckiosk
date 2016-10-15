@@ -15,6 +15,15 @@ namespace ACC_Kiosk
 
     public partial class PPTBrowser : Form
     {
+
+        // set up our variables
+        // todo: needs cleaning up.
+        public string pptFile = "";
+        public string pptFilePath = "";
+        public string path = "";
+        public string pptExt = ".ppt";
+        public string completeFilePath = ""; // we'll use this later
+
         private async void Blink()
         {
             if (Properties.Settings.Default.confName == "")
@@ -31,6 +40,7 @@ namespace ACC_Kiosk
                 }
             }
         }
+
         public TextBox pptFileName
         {
             get
@@ -38,44 +48,12 @@ namespace ACC_Kiosk
                 return pptDirText;
             }
         }
+
         public PPTBrowser()
         {
             InitializeComponent();
         }
-
-        // set up our variables
-        public string pptFile = "";
-        public string pptFilePath = "";
-        public string path = "";
-        public string pptExt = ".ppt";
-        public string completeFilePath = ""; // we'll use this later
-
-        private void browseButton_Click(object sender, EventArgs e)
-        {
-            openFileDialog1.InitialDirectory = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"; //my computer
-            openFileDialog1.Title = "Locate your presentation";
-
-            DialogResult result = this.openFileDialog1.ShowDialog();
-
-            if(result == DialogResult.OK)
-            {
-                this.pptDirText.Text = this.openFileDialog1.FileName;
-                // Extract some details from file search
-                // into filedir / ext / filename
-
-
-                pptFile = openFileDialog1.SafeFileName;
-                path = openFileDialog1.FileName;
-                pptFilePath = path.Replace(pptFile, "");
-
-            }
-        }
-
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
-            PPTBrowser.ActiveForm.Close();
-        }
-
+        
         private void pptDirText_TextChanged(object sender, EventArgs e)
         {
             if (PresenterNameText.Text == "" || pptDirText.Text == "")
@@ -87,7 +65,6 @@ namespace ACC_Kiosk
                 OKButton.Enabled = true;
             }
         }
-
         private void copyDirectory(string strSource, string strDestination)
         {
             if (!Directory.Exists(strDestination))
@@ -114,15 +91,37 @@ namespace ACC_Kiosk
 
         }
 
+        // this stuff needs optimizing
+        private void browseButton_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.InitialDirectory = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"; //my computer
+            openFileDialog1.Title = "Locate your presentation";
+
+            DialogResult result = this.openFileDialog1.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                this.pptDirText.Text = this.openFileDialog1.FileName;
+                // Extract some details from file search
+                // into filedir / ext / filename
+
+
+                pptFile = openFileDialog1.SafeFileName;
+                path = openFileDialog1.FileName;
+                pptFilePath = path.Replace(pptFile, "");
+
+            }
+        }
         private void OKButton_Click(object sender, EventArgs e)
         {
-            if(PresenterNameText.Text == "")
+            if (PresenterNameText.Text == "")
             {
                 MessageBox.Show("Presenter name cannot be blank.", "Error");
-            } if(pptDirText.Text=="")
+            }
+            if (pptDirText.Text == "")
             {
                 MessageBox.Show("Please select a PowerPoint file.", "Error");
-            } 
+            }
             else
             {
                 // Copy the PPT file
@@ -132,7 +131,7 @@ namespace ACC_Kiosk
                 string confNamewSlash = Properties.Settings.Default.confName + "\\";
                 string roomNamewSlash = Properties.Settings.Default.roomName + "\\";
 
-                if(Properties.Settings.Default.confName == "") { confNamewSlash = Properties.Settings.Default.confName; }
+                if (Properties.Settings.Default.confName == "") { confNamewSlash = Properties.Settings.Default.confName; }
                 else { confNamewSlash = Properties.Settings.Default.confName + "\\"; }
 
                 if (Properties.Settings.Default.roomName == "") { roomNamewSlash = Properties.Settings.Default.roomName; }
@@ -140,25 +139,26 @@ namespace ACC_Kiosk
 
                 string destinationPath = Properties.Settings.Default.defaultDirectory + confNamewSlash + roomNamewSlash;
                 string sourceFileName = pptFile;
-                
+
                 // Break up saved data for this presentation for a 'nice' filename
                 // As follows: TIME - NAME - HALL - DAY
                 string destinationFileName = timeTime.Value.ToString("hhmm") + " - " + PresenterNameText.Text + " " + Properties.Settings.Default.roomName.ToString() + " " + dateTime.Value.DayOfWeek.ToString() + " " + pptFile;
-                
+
                 // Combine the source & path
                 string sourceFile = System.IO.Path.Combine(sourcePath, sourceFileName);
                 string destinationFile = System.IO.Path.Combine(destinationPath, destinationFileName);
                 completeFilePath = destinationFile;
-                
+
                 // If the directory we're saving to does not exist, create it
                 if (!System.IO.Directory.Exists(destinationPath))
                 {
                     System.IO.Directory.CreateDirectory(destinationPath);
                 }
-                try {
+                try
+                {
                     // copy
                     Blink();
-                    
+
                     string dirandfile = pptFilePath + pptFile; // our complete file path with extension
                     string dirtocopy = System.IO.Path.ChangeExtension(dirandfile, null) + "\\"; // cut off the (.ppt) ext and see if the file name is also a folder name
 
@@ -200,7 +200,8 @@ namespace ACC_Kiosk
                         destinationFileName = Path.GetFileNameWithoutExtension(destinationFileName);
                         copyDirectory(dirtocopy, destinationPath + destinationFileName.ToString()); // try to copy the directory if extra media exists for the ppt
                     }
-                } catch (Exception errormsg)
+                }
+                catch (Exception errormsg)
                 {
                     // :(
                     MessageBox.Show("Error copying:\n" + sourceFile.ToString() + "\nto\n" + destinationFile.ToString() + "\n\n" + errormsg, "");
@@ -245,7 +246,8 @@ namespace ACC_Kiosk
                         foreach (string line in lines)
                         {
                             file.WriteLine(line);
-                        }  file.Close(); // close when we're done
+                        }
+                        file.Close(); // close when we're done
                     }
                     label5.Visible = false; // make the copying notice invisible
                     PPTBrowser.ActiveForm.Close(); // close this as we are done
@@ -259,17 +261,24 @@ namespace ACC_Kiosk
 
             }
         }
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            PPTBrowser.ActiveForm.Close();
+        }
+
+        /***********************************************************************
+         * --- Code below this line has no function
+         *     and merely exists due to the fact visual studio creates
+         *     the function for the designer.
+        ***********************************************************************/
 
         private void todayDate_Click(object sender, EventArgs e)
         {
         }
-
         private void dateList_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
-
-
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.Enter)
@@ -278,7 +287,6 @@ namespace ACC_Kiosk
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
-
         private void PPTBrowser_Load(object sender, EventArgs e)
         {
             // For 24-hr time
@@ -292,7 +300,6 @@ namespace ACC_Kiosk
                 OKButton.Enabled = true;
             }
         }
-
         private void PresenterNameText_TextChanged(object sender, EventArgs e)
         {
             if (PresenterNameText.Text == "" || pptDirText.Text == "")
@@ -304,22 +311,18 @@ namespace ACC_Kiosk
                 OKButton.Enabled = true;
             }
         }
-
         private void dateTime_ValueChanged(object sender, EventArgs e)
         {
 
         }
-
         private void timer1_Tick(object sender, EventArgs e)
         {
 
         }
-
         private void label4_Click(object sender, EventArgs e)
         {
 
         }
-
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
 

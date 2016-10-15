@@ -41,6 +41,17 @@ namespace ACC_Kiosk
             InitializeComponent();
         }
 
+        // On Form Load
+        private void Settings_Load(object sender, EventArgs e)
+        {
+            // Load settings from settings.cfg
+            SettingsLoad();
+
+            // get ip
+            try { IPLabel.Text = GetClientIP(); }
+            catch (Exception) { IPLabel.Text = "Unknown"; }
+        }
+
         // Load settings from settings.cfg
         void SettingsLoad()
         {
@@ -128,55 +139,17 @@ namespace ACC_Kiosk
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void Settings_Load(object sender, EventArgs e)
-        {
-            // Load settings from settings.cfg
-            SettingsLoad();
-
-            // get ip
-            try { IPLabel.Text = GetClientIP(); }
-            catch (Exception) { IPLabel.Text = "Unknown"; }
-        }
-        
-
-        private void cancelButton_Click(object sender, EventArgs e)
-        {
-            Settings.ActiveForm.Close();
-        }
-
-        private void OKButton_Click(object sender, EventArgs e)
-        {
-            SaveSettings();
-            Settings.ActiveForm.Close();
-        }
-
-        private void RoomName_TextChanged(object sender, EventArgs e)
-        {
-            // Find whether or not Room Name contains invalid characterss
-            string s = RoomName.Text;
-            var withoutSpecial = new string(s.Where(c => Char.IsLetterOrDigit(c) || Char.IsWhiteSpace(c)).ToArray());
-            if (RoomName.Text != withoutSpecial)
-            {
-                MessageBox.Show("The hall name '" + RoomName.Text + "' contains characters that are not allowed. Characters that are not allowed include ' \\ / : * ? \" < > | ", 
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            } else if (RoomName.Text == "" || textBox1.Text == "")
-            { OKButton.Enabled = false; shortcutButton.Enabled = false; }
-        }
-
-        private void PCNameLabel_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        // Form buttons
         private void folderSelect_Click(object sender, EventArgs e)
         {
             // Change our default folder
             FolderBrowserDialog folderPicker = new FolderBrowserDialog();
 
-            if(folderPicker.ShowDialog() == DialogResult.Cancel)
+            if (folderPicker.ShowDialog() == DialogResult.Cancel)
             {
                 // do nothing
-            } else
+            }
+            else
             {
                 try
                 {
@@ -185,43 +158,65 @@ namespace ACC_Kiosk
                     textBox1.Text = folderPicker.SelectedPath.ToString() + "\\";
                     Properties.Settings.Default.Save();
                     OKButton.Enabled = true;
-                } catch (Exception error)  {
+                }
+                catch (Exception error)
+                {
                     MessageBox.Show("Error, invalid folder!\nTry another folder\n" + error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
-
-
-
         private void clearButton_Click(object sender, EventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("Are you sure?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
-            if(dialogResult == DialogResult.Yes)
+            if (dialogResult == DialogResult.Yes)
             {
-                try {
+                try
+                {
                     ClearSettings();
                     Settings.ActiveForm.Close();
-                } catch (Exception error)
+                }
+                catch (Exception error)
                 {
                     MessageBox.Show("Error: \n" + error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
-
-        private void confNameText_TextChanged(object sender, EventArgs e)
+        private void OKButton_Click(object sender, EventArgs e)
         {
-            // Find whether or not Conf Name contains invalid characterss
-            string s = confNameText.Text;
-            var withoutSpecial = new string(s.Where(c => Char.IsLetterOrDigit(c) || Char.IsWhiteSpace(c)).ToArray());
-
-            if (confNameText.Text != withoutSpecial)
+            SaveSettings();
+            Settings.ActiveForm.Close();
+        }
+        private void cancelButton_Click(object sender, EventArgs e)
+        {
+            Settings.ActiveForm.Close();
+        }
+        
+        // Check textbox for special chars
+        void checkStringForSpecialCharacters(string s)
+        {
+            string textToCheck = s;
+            var withoutSpecial = new string(textToCheck.Where(c => Char.IsLetterOrDigit(c) || Char.IsWhiteSpace(c)).ToArray());
+            if (s != withoutSpecial)
             {
-                MessageBox.Show("The conference name '" + RoomName.Text + "' contains characters that are not allowed. Characters that are not allowed include ' \\ / : * ? \" < > | ", 
+                MessageBox.Show("The name '" + s + "' contains characters that are not allowed. Characters that are not allowed include ' \\ / : * ? \" < > | ",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        // Room & Conference Name
+        private void RoomName_TextChanged(object sender, EventArgs e)
+        {
+            // Find whether or not Room Name contains invalid/special characters
+            checkStringForSpecialCharacters(RoomName.Text);
+
+            if (RoomName.Text == "" || textBox1.Text == "") { OKButton.Enabled = false; shortcutButton.Enabled = false; }
+        }
+        private void confNameText_TextChanged(object sender, EventArgs e)
+        {
+            // Find whether or not Conf Name contains invalid characterss
+            checkStringForSpecialCharacters(confNameText.Text);
+        }
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
@@ -234,6 +229,7 @@ namespace ACC_Kiosk
 
         }
 
+        // Create desktop.ink shorcut.
         private void shortcutButton_Click(object sender, EventArgs e)
         {
             string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory).ToString();
@@ -246,6 +242,7 @@ namespace ACC_Kiosk
             shortcutButton.Enabled = false;
         }
 
+        // Background image
         private void bgSelect_Click(object sender, EventArgs e)
         {
             openFileDialog1.InitialDirectory = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"; //my computer
@@ -262,27 +259,35 @@ namespace ACC_Kiosk
                 Properties.Settings.Default.Save();
             } 
          }
-
-        private void bgImageText_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label6_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void openFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-
-        }
-
         private void defaultbgButton_Click(object sender, EventArgs e)
         {
             this.bgImageText.Text = "ACC_Kiosk.Properties.Resources.Adelaide_Convention_Centre";
             Properties.Settings.Default.bgImage = "ACC_Kiosk.Properties.Resources.Adelaide_Convention_Centre";
             Properties.Settings.Default.Save();
+        }
+
+
+        /***********************************************************************
+         * --- Code below this line has no function
+         *     and merely exists due to the fact visual studio creates
+         *     the function for the designer.
+        ***********************************************************************/
+
+        private void bgImageText_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void openFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
+        private void PCNameLabel_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
