@@ -49,6 +49,7 @@
             this.defaultbgButton = new System.Windows.Forms.Button();
             this.bgImageText = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.aboutButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -242,12 +243,23 @@
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
+            // aboutButton
+            // 
+            this.aboutButton.Location = new System.Drawing.Point(11, 322);
+            this.aboutButton.Name = "aboutButton";
+            this.aboutButton.Size = new System.Drawing.Size(43, 23);
+            this.aboutButton.TabIndex = 19;
+            this.aboutButton.Text = "About";
+            this.aboutButton.UseVisualStyleBackColor = true;
+            this.aboutButton.Click += new System.EventHandler(this.aboutButton_Click);
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(259, 357);
+            this.ClientSize = new System.Drawing.Size(259, 353);
+            this.Controls.Add(this.aboutButton);
             this.Controls.Add(this.bgImageText);
             this.Controls.Add(this.defaultbgButton);
             this.Controls.Add(this.bgSelect);
@@ -300,5 +312,6 @@
         private System.Windows.Forms.Button defaultbgButton;
         private System.Windows.Forms.TextBox bgImageText;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Button aboutButton;
     }
 }

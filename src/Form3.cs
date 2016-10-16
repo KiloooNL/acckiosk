@@ -289,5 +289,11 @@ namespace ACC_Kiosk
         {
 
         }
+
+        private void aboutButton_Click(object sender, EventArgs e)
+        {
+            AboutForm frm = new AboutForm();
+            frm.Show();
+        }
     }
 }

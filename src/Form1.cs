@@ -7,12 +7,50 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
+
+// Custom
 using System.Xml;
+using System.Net;
+using System.Net.Mail;
+using System.Threading;
 
 namespace ACC_Kiosk
 {
     public partial class Kiosk : Form
     {
+        // fix:
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+
+            var fromAddress = new MailAddress("user@gmail.com", "Ben");
+            var toAddress = new MailAddress("email address where you want to receive reports", "Your name");
+            const string fromPassword = "your password";
+            const string subject = "exception report";
+            Exception exception = e.Exception;
+            string body = exception.Message + "\n" + exception.Data + "\n" + exception.StackTrace + "\n" + exception.Source;
+
+            var smtp = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
+            };
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body
+            })
+            {
+                // You can also use SendAsync method instead of Send so your application begin invoking instead of waiting for send mail to complete. 
+                // SendAsync(MailMessage, Object) :- Sends the specified e-mail message to an SMTP server for delivery. 
+                // This method does not block the calling thread and allows the caller to pass an object to the method that is invoked when the operation completes. 
+                smtp.Send(message);
+            }
+        }
+
         private PPTBrowser pptForm = new PPTBrowser();
         private System.Windows.Forms.Timer timer1;
         public string programtype;
@@ -20,17 +58,48 @@ namespace ACC_Kiosk
         public string pptdir;
         public string file;
         public string args;
-
-        // Update URL -> xml file
+        
+        // URL to update.xml
         public string updateURL = "http://www.bmcstudios.net/projects/acckiosk/update.xml";
+        // URL to build executable
+        public string buildURL = "http://www.bmcstudios.net/projects/acckiosk/build/acckiosk.exe";
+
+        // Old builds are stored in http://www.bmcstudios.net/projects/acckiosk/build/old/.
+
+        void writeUpdateXML()
+        { 
+            using (XmlWriter writer = XmlWriter.Create("update.xml"))
+            {
+                /**************************
+                 * Default update.xml:    *
+                 * 
+                 * <appinfo>
+                 *      <version>1.x.x.x</version>
+                 *      <url>http://www.url.com</url>
+                 *      <about>changelog</about>
+                 * </appinfo>
+                 * 
+                 * ************************/
+
+                writer.WriteStartDocument();
+                writer.WriteStartElement("appinfo");
+
+                writer.WriteElementString("version", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                writer.WriteElementString("url", buildURL);
+                writer.WriteElementString("about", "some update here.");
+                
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+            }
+        }
 
         void checkForUpdates()
         {
-
+            DebugLog("Checking for updates...");
             string downloadUrl = "";
-            Version newVersion = null;
             string aboutUpdate = "";
             string xmlUrl = updateURL;
+            Version newVersion = null;
             XmlTextReader reader = null;
             try
             {
@@ -66,6 +135,7 @@ namespace ACC_Kiosk
             }
             catch (Exception ex)
             {
+                DebugLog(ex.Message);
                 MessageBox.Show(ex.Message);
                 Environment.Exit(1);
             }
@@ -82,20 +152,24 @@ namespace ACC_Kiosk
                     "Your version: {0}.\n" +
                     "Newest version: {1}.\n" +
                     "Changes in new version: \n{2}. ", applicationVersion, newVersion, aboutUpdate);
+
+                DebugLog("A new version is available, prompting for update...");
                 if (DialogResult.No != MessageBox.Show(str + "\nWould you like to download this update?", "Check for updates", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                 {
                     try
                     {
+                        DebugLog("Trying to update to new version...");
                         Process.Start(downloadUrl);
                     }
-                    catch { }
+                    catch (Exception e) {
+                        DebugLog("Update failed: " + e);
+                    }
                     return;
                 }
             }
             else
             {
-                // make a log that adds this.
-                Console.WriteLine("Application version checked and is up-to-date");
+                DebugLog("Application version checked and is up-to-date");
             }
         }
 
@@ -228,6 +302,7 @@ namespace ACC_Kiosk
             // This needs updating to reflect the ppt dir.
             // pptdir = @"C:\Program Files (x86)\Microsoft Office\Office14\POWERPNT.exe";
         }
+
         // Try to load Adobe file from openPPT();
         string launchAdobeFile()
         {
@@ -292,6 +367,8 @@ namespace ACC_Kiosk
                  For example:
                  Exception thrown: 'System.NullReferenceException' in ACC Kiosk.exe 
                  */
+                DebugLog("Error: Something went wrong trying to launch '" + file + "' with arguments: '" + args + 
+                    "'.\nComplete error message: \n" + e);
                 MessageBox.Show("Error: " + e, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -447,6 +524,7 @@ namespace ACC_Kiosk
 
         private void AddPres_Click(object sender, EventArgs e)
         {
+            DebugLog("Add Presentation clicked.");
             PPTBrowser frm = new PPTBrowser();
             frm.Show();
         }
@@ -479,9 +557,47 @@ namespace ACC_Kiosk
             frm.Show();
         }
 
+        private void DebugLog(string s)
+        {
+            FileStream ostrm;
+            StreamWriter writer;
+            TextWriter oldOut = Console.Out;
+            try
+            {
+                ostrm = new FileStream("./log.txt", FileMode.Append, FileAccess.Write);
+                writer = new StreamWriter(ostrm);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Cannot open log.txt for writing!");
+                Console.WriteLine(e.Message);
+                return;
+            }
+            Console.SetOut(writer);
+            Console.WriteLine(DateTime.Now.ToString() + ": " + s);
+            Console.SetOut(oldOut);
+            writer.Close();
+            ostrm.Close();
+            Console.WriteLine("Done");
+        }
+
+        // On app start
         private void Kiosk_Load(object sender, EventArgs e)
         {
+            DebugLog("\n\n/*********************************************\n" + 
+                "*\n*\n" +
+                "* Application launched\n*\n" + 
+                "* Application version: " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + "\n" +
+                "* Application run time: " + DateTime.Now.ToString() + "\n" +
+                "*\n*\n" +
+            "*********************************************/");
+
+            // Write XML file for update.xml
+            writeUpdateXML();
+
+            // Check for updates
             checkForUpdates();
+
             editPres.Enabled = false; StartPresButton.Enabled = false; // Disable until we retrieve list items
 
 
@@ -511,7 +627,7 @@ namespace ACC_Kiosk
             PresList.MouseDoubleClick += new MouseEventHandler(PresList_DoubleClick);
             InitTimer();
         }
-        
+
         private async void Blink()
         {
             if (Properties.Settings.Default.confName == "")
@@ -544,8 +660,7 @@ namespace ACC_Kiosk
                 }
             } 
         }
-
-
+        
         private void editPres_Click(object sender, EventArgs e)
         {
             if (openPPTFile == "")
@@ -565,9 +680,7 @@ namespace ACC_Kiosk
             }
         }
 
-
-
-
+        
         /***********************************************************************
          * --- Code below this line has no function
          *     and merely exists due to the fact visual studio creates
