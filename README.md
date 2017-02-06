@@ -11,7 +11,9 @@ These instructions will get you a copy of the project up and running on your loc
 .NET 4.5
 
 The following are not required but will prove useful for actually using the program:
+
 Microsoft Office (PowerPoint, Excel, Word)
+
 Adobe Reader
 
 ### Installing
