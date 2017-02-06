@@ -1,9 +1,4 @@
 # acckiosk
-A kiosk system for managing & editing presentations across a large scale conference.
-
-README to be extended in the future. (sorry no time)
-
-# acckiosk
 
 acckiosk is a kiosk system for managing, editing and displaying presentations (PPT, PDF, EXCEL, etc.) for your conference.
 
