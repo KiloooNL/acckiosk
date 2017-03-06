@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ACC Kiosk")]
-[assembly: AssemblyCopyright("Copyright © 2015 - Developed by Ben Weidenhofer in C#")]
+[assembly: AssemblyCopyright("Copyright © 2015-2016 - Developed by Ben Weidenhofer in C#")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

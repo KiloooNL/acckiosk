@@ -93,6 +93,7 @@ namespace ACC_Kiosk
             }
         }
 
+        // Check for updates
         void checkForUpdates()
         {
             DebugLog("Checking for updates...");
@@ -101,6 +102,7 @@ namespace ACC_Kiosk
             string xmlUrl = updateURL;
             Version newVersion = null;
             XmlTextReader reader = null;
+            Version applicationVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             try
             {
                 reader = new XmlTextReader(xmlUrl);
@@ -121,12 +123,16 @@ namespace ACC_Kiosk
                                 {
                                     case "version":
                                         newVersion = new Version(reader.Value);
+                                        DebugLog("Current version: " + applicationVersion.Build);
+                                        DebugLog("New version: " + newVersion);
                                         break;
                                     case "url":
                                         downloadUrl = reader.Value;
+                                        DebugLog("Download URL: " + downloadUrl);
                                         break;
                                     case "about":
                                         aboutUpdate = reader.Value;
+                                        DebugLog("About: " + aboutUpdate);
                                         break;
                                 }
                         }
@@ -135,7 +141,7 @@ namespace ACC_Kiosk
             }
             catch (Exception ex)
             {
-                DebugLog(ex.Message);
+                DebugLog("Error: " + ex.Message);
                 MessageBox.Show(ex.Message);
                 Environment.Exit(1);
             }
@@ -144,13 +150,12 @@ namespace ACC_Kiosk
                 if (reader != null)
                     reader.Close();
             }
-            Version applicationVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            if (applicationVersion.CompareTo(newVersion) < 0)
+            if (newVersion > applicationVersion)
             {
                 string str = String.Format(
                     "There is a new version available.\n" +
                     "Your version: {0}.\n" +
-                    "Newest version: {1}.\n" +
+                    "Newest version: {1}.\n\n" +
                     "Changes in new version: \n{2}. ", applicationVersion, newVersion, aboutUpdate);
 
                 DebugLog("A new version is available, prompting for update...");
@@ -163,6 +168,7 @@ namespace ACC_Kiosk
                     }
                     catch (Exception e) {
                         DebugLog("Update failed: " + e);
+                        MessageBox.Show("The update was unsuccessful. Try again later.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     }
                     return;
                 }
@@ -211,9 +217,11 @@ namespace ACC_Kiosk
                         writer.Close();
                     }
                 }
-                catch(Exception er)
+                catch(Exception e)
                 {
-                    DialogResult dialogresult = MessageBox.Show("Error creating settings file, is the directory read-only?\nError details: \n" + er.ToString(), "Fatal Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+                    DebugLog("Error: there was an issue creating the settings.cfg file. Stack trace: " + e);
+
+                    DialogResult dialogresult = MessageBox.Show("Error creating settings file, is the directory read-only?\nError details: \n" + e.ToString(), "Fatal Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
                     if (dialogresult == DialogResult.Retry)
                     {
                         CreateSettingsCFG();
@@ -227,7 +235,7 @@ namespace ACC_Kiosk
                 {
                     if (stream != null)
                     {
-                        stream.Dispose();
+                       stream.Dispose();
                     }
                 }
 
@@ -293,9 +301,10 @@ namespace ACC_Kiosk
                     }
                 }
             }
-            catch (Exception ef)
+            catch (Exception e)
             {
-                MessageBox.Show("Error: " + ef, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DebugLog("Error: there was an issue loading the powerpoint file.\nStack trace: " + e);
+                MessageBox.Show("Error: " + e, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             pptdir = dir + "POWERPNT.exe";
             return pptdir;
@@ -393,6 +402,7 @@ namespace ACC_Kiosk
                 }
                 catch
                 {
+                    DebugLog("Error: there was an error changing the background image... reverting to default image.\nStack trace: " + e);
                     BackgroundImage = Properties.Resources.Adelaide_Convention_Centre;
                 }
             }
@@ -532,7 +542,13 @@ namespace ACC_Kiosk
         private void PresList_DoubleClick(object sender, MouseEventArgs e)
         {
             openPPTFile = PresList.SelectedItems[0].SubItems[4].Text;
-            StartPresButton.PerformClick();
+            try
+            {
+                StartPresButton.PerformClick();
+            } catch(Exception ex)
+            {
+                DebugLog("Error: " + ex);
+            }
         }
 
         private void PresList_SelectedIndexChanged(object sender, EventArgs e)
@@ -547,7 +563,13 @@ namespace ACC_Kiosk
 
         private void getPPTFiles()
         {
-            PresList.Items.Add(pptForm.pptFileName.Text);
+            try
+            {
+                PresList.Items.Add(pptForm.pptFileName.Text);
+            } catch(Exception e)
+            {
+                DebugLog("\nError: " + e);
+            }
         }
 
         private void SettingsButton_Click(object sender, EventArgs e)
@@ -584,13 +606,14 @@ namespace ACC_Kiosk
         // On app start
         private void Kiosk_Load(object sender, EventArgs e)
         {
-            DebugLog("\n\n/*********************************************\n" + 
+            DebugLog("\n"+
+                "/*********************************************\n" + 
                 "*\n*\n" +
                 "* Application launched\n*\n" + 
                 "* Application version: " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + "\n" +
                 "* Application run time: " + DateTime.Now.ToString() + "\n" +
                 "*\n*\n" +
-            "*********************************************/");
+                "*********************************************/");
 
             // Write XML file for update.xml
             writeUpdateXML();
@@ -600,8 +623,9 @@ namespace ACC_Kiosk
 
             editPres.Enabled = false; StartPresButton.Enabled = false; // Disable until we retrieve list items
 
-
             Clock.Text = DateTime.Now.ToString("hh:mm:ss tt");
+
+            // Enable UI
             Properties.Settings.Default.settingsVisible = true;
             Properties.Settings.Default.Save();
             SettingsButton.Visible = true;
@@ -617,6 +641,7 @@ namespace ACC_Kiosk
             //FormBorderStyle = FormBorderStyle.None;
             //WindowState = FormWindowState.Maximized;
 
+            // TODO: Make the below code neater. Perhaps implement timer1 & timer2 into a function.
             timer2 = new System.Windows.Forms.Timer();
             timer2.Tick += new EventHandler(timer2_Tick);
             timer2.Interval = 1000; // in miliseconds
